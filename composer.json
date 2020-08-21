@@ -1,0 +1,41 @@
+{
+    "name": "ltc/komfortkasse",
+    "description": "Komfortkasse plugin",
+    "version": "v1.6.0",
+    "type": "shopware-platform-plugin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "LTC Information Services GmbH"
+        }
+    ],
+    "require": {
+        "shopware/core": "*"
+    },
+    "extra": {
+        "shopware-plugin-class": "Ltc\\Komfortkasse\\LtcKomfortkasse6",
+        "label": {
+            "de-DE": "Komfortkasse",
+            "en-GB": "Komfortkasse"
+        },
+        "description": {
+            "de-DE": "Zahlung per Banküberweisung",
+            "en-GB": "Pay by bank wire transfer"
+        },
+        "plugin-icon": "src/Resources/plugin.png",
+        "copyright": "(c) by LTC Information Services GmbH",
+		"manufacturerLink": {
+            "de-DE": "https://komfortkasse.eu",
+            "en-GB": "https://komfortkasse.eu"
+        },
+        "supportLink": {
+            "de-DE": "https://komfortkasse.eu/shopware",
+            "en-GB": "https://komfortkasse.eu/shopware"
+        }        
+    },
+    "autoload": {
+        "psr-4": {
+            "Ltc\\Komfortkasse\\": "src/"
+        }
+    }
+}

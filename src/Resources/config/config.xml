@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/master/src/Core/System/SystemConfig/Schema/config.xsd">
+  <card>
+    <title>Komfortkasse configuration</title>
+    <title lang="de-DE">Komfortkasse Konfiguration</title>
+    <input-field type="bool">
+      <name>active</name>
+      <label>Enable plugin</label>
+      <label lang="de-DE">Plugin aktivieren</label>
+      <defaultValue>true</defaultValue>
+    </input-field>
+    <input-field type="text">
+      <name>refundDocumentType</name>
+      <label>Document type for refunds</label>
+      <label lang="de-DE">Dokumenten-Typ für Rückerstattungen</label>
+      <helpText>Document type for automatic creation of refunds. Only relevant if refunds from shop system are activated in Komfortkasse merchant area.</helpText>
+      <helpText lang="de-DE">Dokumenten-Typ für die automatische Erzeugung von Rückerstattungen. Nur relevant, wenn Rückerstattungen aus dem Shopsystem im Komfortkasse Händlerbereich aktiviert sind.</helpText>
+      <required>false</required>
+      <defaultValue>storno</defaultValue>
+    </input-field>
+  </card>
+</config>
