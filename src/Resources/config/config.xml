@@ -9,6 +9,7 @@
       <label lang="de-DE">Plugin aktivieren</label>
       <defaultValue>true</defaultValue>
     </input-field>
+    <!-- 
     <input-field type="text">
       <name>refundDocumentType</name>
       <label>Document type for refunds</label>
@@ -18,5 +19,6 @@
       <required>false</required>
       <defaultValue>storno</defaultValue>
     </input-field>
+     -->
   </card>
 </config>

@@ -41,7 +41,7 @@ class OrderSubscriber implements EventSubscriberInterface
 
     public function onInsertOrder(EntityWrittenEvent $event)
     {
-        $active = $this->systemConfigService->get('Komfortkasse.config.active');
+        $active = $this->systemConfigService->get('LtcKomfortkasse6.config.active');
         if (!$active)
             return;
 
@@ -53,27 +53,28 @@ class OrderSubscriber implements EventSubscriberInterface
             $orders = $this->orderRepo->search($orderCriteria, $event->getContext())->getEntities();
 
             foreach ($orders as $order) {
-//                 $urls = array ();
-//                 foreach ($order->getSalesChannel()->getDomains() as $domain) {
-//                     $urls [] = $domain->getUrl();
-//                 }
+                $urls = array ();
+                $channel = $order->getSalesChannel();
+                if (!$this->systemConfigService->get('LtcKomfortkasse6.config.active', $channel->getId()))
+                    continue;
 
-//                 $query = http_build_query(array ('id' => $order->getId(),'url' => $urls
-//                 ));
-//                 $ch = curl_init();
-//                 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-//                 curl_setopt($ch, CURLOPT_HTTPHEADER, array ('Connection: close','Content-Length: ' . strlen($query)
-//                 ));
-//                 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-//                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-//                 curl_setopt($ch, CURLOPT_URL, 'https://ssl.komfortkasse.eu/api/shop/neworder.jsf');
-//                 curl_setopt($ch, CURLOPT_POST, 1);
-//                 curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
-//                 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
-//                 curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1001);
-//                 curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
-//                 @curl_exec($ch);
-//                 @curl_close ($ch);
+                foreach ($channel->getDomains() as $domain) {
+                    $urls [] = $domain->getUrl();
+                }
+
+                $query = http_build_query(array ('id' => $order->getId(),'url' => $urls));
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_URL, 'https://ssl.komfortkasse.eu/api/shop/neworder.jsf');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
+                curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1001);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
+                @curl_exec($ch);
+                @curl_close ($ch);
             }
         }
 
