@@ -64,6 +64,7 @@ class OrderSubscriber implements EventSubscriberInterface
 
                 $query = http_build_query(array ('id' => $order->getId(),'url' => $urls));
                 $ch = curl_init();
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
                 curl_setopt($ch, CURLOPT_URL, 'https://ssl.komfortkasse.eu/api/shop/neworder.jsf');
                 curl_setopt($ch, CURLOPT_POST, true);
