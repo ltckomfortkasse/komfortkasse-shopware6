@@ -4,3 +4,6 @@
 # 1.6.1
 - bugfix for error 'Failed to start the session because headers have already been sent'
 
+# 1.6.2
+- performance improvements (fewer API calls)
+

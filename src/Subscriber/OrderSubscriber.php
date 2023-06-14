@@ -50,6 +50,7 @@ class OrderSubscriber implements EventSubscriberInterface
             $orderCriteria = new Criteria([ $result->getPrimaryKey()
             ]);
             $orderCriteria->addAssociation('salesChannel.domains');
+            $orderCriteria->addAssociation('transactions.paymentMethod');
             $orders = $this->orderRepo->search($orderCriteria, $event->getContext())->getEntities();
 
             foreach ($orders as $order) {
@@ -62,7 +63,15 @@ class OrderSubscriber implements EventSubscriberInterface
                     $urls [] = $domain->getUrl();
                 }
 
-                $query = http_build_query(array ('id' => $order->getId(),'url' => $urls));
+                $paymentMethods = array();
+                foreach ($order->getTransactions() as $t) {
+                    if (!in_array($t->getPaymentMethodId(), $paymentMethods))
+                        $paymentMethods [] = $t->getPaymentMethodId();
+                    if ($t->getPaymentMethod() && !in_array($t->getPaymentMethod()->getFormattedHandlerIdentifier(), $paymentMethods))
+                        $paymentMethods [] = $t->getPaymentMethod()->getFormattedHandlerIdentifier();
+                }
+                
+                $query = http_build_query(array ('id' => $order->getId(),'url' => $urls, 'payment_method' => $paymentMethods));
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
