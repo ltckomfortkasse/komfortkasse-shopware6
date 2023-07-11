@@ -5,7 +5,7 @@ declare(strict_types = 1)
 namespace Ltc\Komfortkasse\Subscriber;
 
 use Shopware\Core\Checkout\Order\OrderEvents;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
@@ -17,11 +17,11 @@ class OrderSubscriber implements EventSubscriberInterface
     /** @var SystemConfigService */
     private $systemConfigService;
 
-    /** @var EntityRepositoryInterface */
+    /** @var EntityRepository */
     private $orderRepo;
 
 
-    public function __construct(SystemConfigService $systemConfigService, EntityRepositoryInterface $orderRepo)
+    public function __construct(SystemConfigService $systemConfigService, EntityRepository $orderRepo)
     {
         $this->systemConfigService = $systemConfigService;
         $this->orderRepo = $orderRepo;

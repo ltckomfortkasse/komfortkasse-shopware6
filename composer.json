@@ -1,7 +1,7 @@
 {
 	"name" : "ltc/komfortkasse",
 	"description" : "Komfortkasse plugin",
-	"version" : "v1.6.2",
+	"version" : "v1.6.3",
 	"type" : "shopware-platform-plugin",
 	"license" : "MIT",
 	"authors" : [{

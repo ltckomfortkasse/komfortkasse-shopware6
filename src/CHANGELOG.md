@@ -7,3 +7,6 @@
 # 1.6.2
 - performance improvements (fewer API calls)
 
+# 1.6.3
+- Shopware 6.5 compatibility
+
