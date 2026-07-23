@@ -10,3 +10,8 @@
 # 1.6.3
 - Shopware 6.5 compatibility
 
+# 1.6.4
+- only notify Komfortkasse on new orders and on relevant changes (amount, order state, order number) instead of on every write
+- notify Komfortkasse when a document is created, so invoice numbers arrive without waiting for the next full read
+- fewer database queries when many orders are written at once
+
