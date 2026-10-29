@@ -1,0 +1,8 @@
+{
+    "ltc-komfortkasse": {
+        "refund": {
+            "button": "Rückerstattung erfassen",
+            "error": "Die Seite für die Rückerstattung in Komfortkasse konnte nicht geöffnet werden. Bitte versuchen Sie es erneut oder legen Sie die Rückerstattung im Komfortkasse Händlerbereich an."
+        }
+    }
+}

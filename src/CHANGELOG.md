@@ -15,3 +15,6 @@
 - notify Komfortkasse when a document is created, so invoice numbers arrive without waiting for the next full read
 - fewer database queries when many orders are written at once
 
+# 1.7.0
+- requires Shopware 6.7
+- button 'Create refund' in the order detail of the administration: opens the Komfortkasse page to create a refund for the order (only if refunds are enabled for the shop in Komfortkasse)

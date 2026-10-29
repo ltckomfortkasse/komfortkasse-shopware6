@@ -1,0 +1,13 @@
+{% block sw_order_detail_actions_abort %}
+<mt-button
+    v-if="ltcKomfortkasseRefundAvailable"
+    class="ltc-komfortkasse-refund-button"
+    variant="secondary"
+    size="default"
+    :disabled="ltcKomfortkasseRefundLoading"
+    @click="onLtcKomfortkasseRefund"
+>
+    {{ $tc('ltc-komfortkasse.refund.button') }}
+</mt-button>
+{% parent %}
+{% endblock %}

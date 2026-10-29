@@ -1,0 +1,23 @@
+{
+  "base": "/bundles/ltckomfortkasse6/administration/",
+  "entryPoints": {
+    "ltc-komfortkasse6": {
+      "css": [],
+      "dynamic": [],
+      "js": [
+        "/bundles/ltckomfortkasse6/administration/assets/ltc-komfortkasse6-KrYP-OPv.js"
+      ],
+      "legacy": false,
+      "preload": []
+    }
+  },
+  "legacy": false,
+  "metadatas": {},
+  "version": [
+    "7.1.0",
+    7,
+    1,
+    0
+  ],
+  "viteServer": null
+}

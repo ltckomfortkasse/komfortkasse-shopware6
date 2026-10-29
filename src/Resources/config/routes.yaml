@@ -1,0 +1,3 @@
+ltc_komfortkasse_controllers:
+    resource: ../../Controller/
+    type: attribute

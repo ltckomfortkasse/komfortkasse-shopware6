@@ -1,0 +1,8 @@
+{
+    "ltc-komfortkasse": {
+        "refund": {
+            "button": "Create refund",
+            "error": "The refund page in Komfortkasse could not be opened. Please try again or create the refund in the Komfortkasse merchant area."
+        }
+    }
+}
