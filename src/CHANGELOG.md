@@ -21,3 +21,6 @@
 
 # 1.7.1
 - button 'Open in Komfortkasse' in the order detail of the administration: opens the order in the Komfortkasse merchant area (for all orders, if the plugin is active for the sales channel)
+
+# 1.7.2
+- button 'Open in Komfortkasse': the link also contains the order id, so the right order opens if a merchant has the same order number in several shops

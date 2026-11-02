@@ -107,6 +107,7 @@ class RefundLinkController extends AbstractController
      * Link "In Komfortkasse oeffnen": {"url": "..."} oder {"url": null}, wenn das Plugin fuer den Verkaufskanal nicht aktiv ist.
      * Gilt fuer alle Bestellungen, auch unbezahlte (das Zusatzfeld gibt es erst nach einem Status-Update): das Plugin weiss nicht, welche
      * Zahlungsarten Komfortkasse verarbeitet. Kennt Komfortkasse die Bestellung nicht, bleibt die gefilterte Bestellliste leer.
+     * Die Bestell-ID unterscheidet gleiche Nummern in mehreren Shops des Haendlers; Komfortkasse sucht zuerst danach, dann nach der Nummer.
      * Braucht kein Token: die Bestellung oeffnet sich erst nach der Anmeldung im Haendlerbereich und nur beim Haendler, dem sie gehoert.
      */
     #[Route(path: '/api/_action/ltc-komfortkasse/order-link/{orderId}', name: 'api.action.ltc_komfortkasse.order_link', defaults: ['_acl' => ['order:read']], methods: ['GET'])]
@@ -116,7 +117,7 @@ class RefundLinkController extends AbstractController
         if ($order === null || empty($order->getOrderNumber()) || !$this->systemConfigService->get(self::CONFIG_ACTIVE, $order->getSalesChannelId()))
             return new JsonResponse([ 'url' => null ]);
 
-        $query = http_build_query([ 'redirect' => 'orders.jsf','orderNumber' => $order->getOrderNumber() ]);
+        $query = http_build_query([ 'redirect' => 'orders.jsf','orderNumber' => $order->getOrderNumber(),'orderId' => $order->getId() ]);
         return new JsonResponse([ 'url' => $this->getBaseUrl($order->getSalesChannelId()) . self::ORDER_PATH . '?' . $query ]);
 
     }
