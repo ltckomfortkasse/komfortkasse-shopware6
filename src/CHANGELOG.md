@@ -18,3 +18,6 @@
 # 1.7.0
 - requires Shopware 6.7
 - button 'Create refund' in the order detail of the administration: opens the Komfortkasse page to create a refund for the order (only if refunds are enabled for the shop in Komfortkasse)
+
+# 1.7.1
+- button 'Open in Komfortkasse' in the order detail of the administration: opens the order in the Komfortkasse merchant area (for all orders, if the plugin is active for the sales channel)

@@ -31,6 +31,8 @@ use Symfony\Component\Routing\Attribute\Route;
 class RefundLinkController extends AbstractController
 {
 
+    private const CONFIG_ACTIVE = 'LtcKomfortkasse6.config.active';
+
     private const CONFIG_SHOP_ID = 'LtcKomfortkasse6.config.refundLinkShopId';
 
     /** nur zum Testen gegen ein anderes Komfortkasse-System, siehe getBaseUrl() */
@@ -39,6 +41,8 @@ class RefundLinkController extends AbstractController
     private const DEFAULT_BASE_URL = 'https://ssl.komfortkasse.eu';
 
     private const PATH = '/public/shopRefund.jsf';
+
+    private const ORDER_PATH = '/sec/login.jsf';
 
     /** Zusatzfeld der Transaktion, das Komfortkasse zu Bestellungen mit verarbeiteter Zahlung schreibt */
     private const CUSTOM_FIELD = 'komfortkasse';
@@ -95,6 +99,25 @@ class RefundLinkController extends AbstractController
 
         $query = http_build_query([ 'shop' => $shopId,'order' => $order->getId(),'token' => $token ]);
         return new JsonResponse([ 'url' => $baseUrl . self::PATH . '?' . $query ]);
+
+    }
+
+
+    /**
+     * Link "In Komfortkasse oeffnen": {"url": "..."} oder {"url": null}, wenn das Plugin fuer den Verkaufskanal nicht aktiv ist.
+     * Gilt fuer alle Bestellungen, auch unbezahlte (das Zusatzfeld gibt es erst nach einem Status-Update): das Plugin weiss nicht, welche
+     * Zahlungsarten Komfortkasse verarbeitet. Kennt Komfortkasse die Bestellung nicht, bleibt die gefilterte Bestellliste leer.
+     * Braucht kein Token: die Bestellung oeffnet sich erst nach der Anmeldung im Haendlerbereich und nur beim Haendler, dem sie gehoert.
+     */
+    #[Route(path: '/api/_action/ltc-komfortkasse/order-link/{orderId}', name: 'api.action.ltc_komfortkasse.order_link', defaults: ['_acl' => ['order:read']], methods: ['GET'])]
+    public function orderLink(string $orderId, Context $context): JsonResponse
+    {
+        $order = Uuid::isValid($orderId) ? $this->loadOrder($orderId, $context) : null;
+        if ($order === null || empty($order->getOrderNumber()) || !$this->systemConfigService->get(self::CONFIG_ACTIVE, $order->getSalesChannelId()))
+            return new JsonResponse([ 'url' => null ]);
+
+        $query = http_build_query([ 'redirect' => 'orders.jsf','orderNumber' => $order->getOrderNumber() ]);
+        return new JsonResponse([ 'url' => $this->getBaseUrl($order->getSalesChannelId()) . self::ORDER_PATH . '?' . $query ]);
 
     }
 

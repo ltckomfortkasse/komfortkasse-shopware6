@@ -1,5 +1,14 @@
 {% block sw_order_detail_actions_abort %}
 <mt-button
+    v-if="ltcKomfortkasseOrderLink"
+    class="ltc-komfortkasse-open-order-button"
+    variant="secondary"
+    size="default"
+    @click="onLtcKomfortkasseOpenOrder"
+>
+    {{ $tc('ltc-komfortkasse.order.button') }}
+</mt-button>
+<mt-button
     v-if="ltcKomfortkasseRefundAvailable"
     class="ltc-komfortkasse-refund-button"
     variant="secondary"

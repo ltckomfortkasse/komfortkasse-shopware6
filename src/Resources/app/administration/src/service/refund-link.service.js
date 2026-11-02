@@ -22,6 +22,13 @@ class LtcKomfortkasseRefundLinkService extends ApiService {
             .get(`_action/${this.getApiBasePath()}/refund-link/${orderId}`, { headers: this.getBasicHeaders() })
             .then((response) => ApiService.handleResponse(response));
     }
+
+    /** @returns {Promise<{url: string|null}>} Link "In Komfortkasse oeffnen", null = keine Schaltflaeche */
+    getOrderLink(orderId) {
+        return this.httpClient
+            .get(`_action/${this.getApiBasePath()}/order-link/${orderId}`, { headers: this.getBasicHeaders() })
+            .then((response) => ApiService.handleResponse(response));
+    }
 }
 
 Shopware.Service().register('ltcKomfortkasseRefundLinkService', (container) => {
