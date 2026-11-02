@@ -3,6 +3,18 @@
         "order": {
             "button": "In Komfortkasse öffnen"
         },
+        "paymentInfos": {
+            "title": "Zahlungen in Komfortkasse",
+            "postingDate": "Buchungsdatum",
+            "postingAmount": "Betrag",
+            "bankFees": "Bankgebühren",
+            "noPostings": "Keine Zahlung zugeordnet.",
+            "sum": "Summe",
+            "amountMissing": "Noch offen",
+            "reminderFees": "Mahngebühren",
+            "lastModified": "Zuletzt aktualisiert: {date}.",
+            "syncHint": "Wird täglich abgeglichen, bis 30 Tage nach dem Bestelldatum."
+        },
         "refund": {
             "button": "Rückerstattung erfassen",
             "error": "Die Seite für die Rückerstattung in Komfortkasse konnte nicht geöffnet werden. Bitte versuchen Sie es erneut oder legen Sie die Rückerstattung im Komfortkasse Händlerbereich an."

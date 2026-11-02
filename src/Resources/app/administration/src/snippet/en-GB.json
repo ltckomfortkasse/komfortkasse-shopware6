@@ -3,6 +3,18 @@
         "order": {
             "button": "Open in Komfortkasse"
         },
+        "paymentInfos": {
+            "title": "Payments in Komfortkasse",
+            "postingDate": "Booking date",
+            "postingAmount": "Amount",
+            "bankFees": "Bank fees",
+            "noPostings": "No payment assigned.",
+            "sum": "Total",
+            "amountMissing": "Still open",
+            "reminderFees": "Reminder fees",
+            "lastModified": "Last updated: {date}.",
+            "syncHint": "Checked daily, up to 30 days after the order date."
+        },
         "refund": {
             "button": "Create refund",
             "error": "The refund page in Komfortkasse could not be opened. Please try again or create the refund in the Komfortkasse merchant area."

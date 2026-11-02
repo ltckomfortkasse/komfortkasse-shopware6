@@ -1,8 +1,11 @@
 {
   "main.js": {
-    "file": "assets/ltc-komfortkasse6-CtlNR0LQ.js",
+    "file": "assets/ltc-komfortkasse6-oZgbnXwc.js",
     "name": "ltc-komfortkasse6",
     "src": "main.js",
-    "isEntry": true
+    "isEntry": true,
+    "css": [
+      "assets/ltc-komfortkasse6-BOJfWM6h.css"
+    ]
   }
 }

@@ -11,18 +11,5 @@
     </template>
     {{ $tc('ltc-komfortkasse.order.button') }}
 </mt-button>
-<mt-button
-    v-if="ltcKomfortkasseRefundAvailable"
-    class="ltc-komfortkasse-refund-button"
-    variant="secondary"
-    size="default"
-    :disabled="ltcKomfortkasseRefundLoading"
-    @click="onLtcKomfortkasseRefund"
->
-    <template #iconFront>
-        <ltc-komfortkasse-logo />
-    </template>
-    {{ $tc('ltc-komfortkasse.refund.button') }}
-</mt-button>
 {% parent %}
 {% endblock %}

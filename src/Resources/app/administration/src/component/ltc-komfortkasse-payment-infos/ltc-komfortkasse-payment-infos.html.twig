@@ -1,0 +1,88 @@
+<mt-card
+    v-if="infos"
+    class="ltc-komfortkasse-payment-infos"
+    position-identifier="ltc-komfortkasse-payment-infos"
+    :title="$t('ltc-komfortkasse.paymentInfos.title')"
+>
+    <table
+        v-if="postings.length"
+        class="ltc-komfortkasse-payment-infos__table"
+    >
+        <thead>
+            <tr>
+                <th>{{ $t('ltc-komfortkasse.paymentInfos.postingDate') }}</th>
+                <th class="ltc-komfortkasse-payment-infos__number">{{ $t('ltc-komfortkasse.paymentInfos.postingAmount') }}</th>
+                <th
+                    v-if="hasBankFees"
+                    class="ltc-komfortkasse-payment-infos__number"
+                >
+                    {{ $t('ltc-komfortkasse.paymentInfos.bankFees') }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr
+                v-for="(posting, index) in postings"
+                :key="index"
+            >
+                <td>{{ formatPostingDate(posting.postingDate) }}</td>
+                <td class="ltc-komfortkasse-payment-infos__number">{{ formatAmount(posting.amount, posting.currency) }}</td>
+                <td
+                    v-if="hasBankFees"
+                    class="ltc-komfortkasse-payment-infos__number"
+                >
+                    {{ posting.bankFees ? formatAmount(posting.bankFees, posting.currency) : '-' }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <p
+        v-else
+        class="ltc-komfortkasse-payment-infos__empty"
+    >
+        {{ $t('ltc-komfortkasse.paymentInfos.noPostings') }}
+    </p>
+
+    <dl
+        v-if="showPostingsSum || infos.amountMissing || infos.reminderFees"
+        class="ltc-komfortkasse-payment-infos__summary"
+    >
+        <template v-if="showPostingsSum">
+            <dt>{{ $t('ltc-komfortkasse.paymentInfos.sum') }}</dt>
+            <dd>{{ formatAmount(postingsSum, postings[0].currency) }}</dd>
+        </template>
+        <template v-if="infos.amountMissing">
+            <dt>{{ $t('ltc-komfortkasse.paymentInfos.amountMissing') }}</dt>
+            <dd>{{ formatAmount(infos.amountMissing, infos.currency) }}</dd>
+        </template>
+        <template v-if="infos.reminderFees">
+            <dt>{{ $t('ltc-komfortkasse.paymentInfos.reminderFees') }}</dt>
+            <dd>{{ formatAmount(infos.reminderFees, infos.currency) }}</dd>
+        </template>
+    </dl>
+
+    <p class="ltc-komfortkasse-payment-infos__note">
+        <template v-if="lastModified">
+            {{ $t('ltc-komfortkasse.paymentInfos.lastModified', { date: lastModified }) }}
+        </template>
+        {{ $t('ltc-komfortkasse.paymentInfos.syncHint') }}
+    </p>
+
+    <div
+        v-if="showRefundButton"
+        class="ltc-komfortkasse-payment-infos__actions"
+    >
+        <mt-button
+            class="ltc-komfortkasse-refund-button"
+            variant="secondary"
+            size="default"
+            :disabled="refundLoading"
+            @click="onRefund"
+        >
+            <template #iconFront>
+                <ltc-komfortkasse-logo />
+            </template>
+            {{ $t('ltc-komfortkasse.refund.button') }}
+        </mt-button>
+    </div>
+</mt-card>

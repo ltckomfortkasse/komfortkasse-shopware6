@@ -27,3 +27,7 @@
 
 # 1.7.3
 - Komfortkasse logo as icon in the buttons 'Open in Komfortkasse' and 'Create refund'
+
+# 1.7.4
+- new card 'Payments in Komfortkasse' in the order detail of the administration: payments, total, amount still open, reminder fees, time of the last update (only if Komfortkasse has transferred payment details)
+- button 'Create refund' moved into this card, shown only if a payment is assigned

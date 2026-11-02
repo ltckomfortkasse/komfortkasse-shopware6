@@ -2,10 +2,12 @@
   "base": "/bundles/ltckomfortkasse6/administration/",
   "entryPoints": {
     "ltc-komfortkasse6": {
-      "css": [],
+      "css": [
+        "/bundles/ltckomfortkasse6/administration/assets/ltc-komfortkasse6-BOJfWM6h.css"
+      ],
       "dynamic": [],
       "js": [
-        "/bundles/ltckomfortkasse6/administration/assets/ltc-komfortkasse6-CtlNR0LQ.js"
+        "/bundles/ltckomfortkasse6/administration/assets/ltc-komfortkasse6-oZgbnXwc.js"
       ],
       "legacy": false,
       "preload": []
