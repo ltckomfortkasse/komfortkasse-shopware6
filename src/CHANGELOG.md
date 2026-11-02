@@ -34,3 +34,6 @@
 
 # 1.7.5
 - card 'Payments in Komfortkasse': executed refunds as negative rows with their type; the total is the sum of all rows
+
+# 1.7.6
+- card 'Payments in Komfortkasse': refunds not yet executed appear as rows without a date, marked as not yet executed, and count towards the total

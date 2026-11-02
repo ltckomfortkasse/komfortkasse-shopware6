@@ -27,7 +27,7 @@
                 :key="index"
             >
                 <td>{{ formatPostingDate(row.date) }}</td>
-                <td v-if="refunds.length">{{ $t(row.refund ? 'ltc-komfortkasse.paymentInfos.rowRefund' : 'ltc-komfortkasse.paymentInfos.rowPayment') }}</td>
+                <td v-if="refunds.length">{{ $t(`ltc-komfortkasse.paymentInfos.${row.type}`) }}</td>
                 <td class="ltc-komfortkasse-payment-infos__number">{{ formatAmount(row.amount, row.currency) }}</td>
                 <td
                     v-if="hasBankFees"

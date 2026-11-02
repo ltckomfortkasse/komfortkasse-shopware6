@@ -9,6 +9,7 @@
             "rowType": "Type",
             "rowPayment": "Payment",
             "rowRefund": "Refund",
+            "rowRefundPending": "Refund (not yet executed)",
             "postingAmount": "Amount",
             "bankFees": "Bank fees",
             "noPostings": "No payment assigned.",
@@ -16,7 +17,7 @@
             "amountMissing": "Still open",
             "reminderFees": "Reminder fees",
             "lastModified": "Last updated: {date}.",
-            "syncHint": "Checked daily, up to 30 days after the order date, executed refunds also later."
+            "syncHint": "Checked daily, up to 30 days after the order date, refunds also later."
         },
         "refund": {
             "button": "Create refund",

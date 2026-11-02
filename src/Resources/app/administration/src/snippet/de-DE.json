@@ -9,6 +9,7 @@
             "rowType": "Art",
             "rowPayment": "Zahlung",
             "rowRefund": "Rückerstattung",
+            "rowRefundPending": "Rückerstattung (noch nicht ausgeführt)",
             "postingAmount": "Betrag",
             "bankFees": "Bankgebühren",
             "noPostings": "Keine Zahlung zugeordnet.",
@@ -16,7 +17,7 @@
             "amountMissing": "Noch offen",
             "reminderFees": "Mahngebühren",
             "lastModified": "Zuletzt aktualisiert: {date}.",
-            "syncHint": "Wird täglich abgeglichen, bis 30 Tage nach dem Bestelldatum, ausgeführte Rückerstattungen auch danach."
+            "syncHint": "Wird täglich abgeglichen, bis 30 Tage nach dem Bestelldatum, Rückerstattungen auch danach."
         },
         "refund": {
             "button": "Rückerstattung erfassen",

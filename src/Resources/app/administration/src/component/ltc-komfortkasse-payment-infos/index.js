@@ -48,7 +48,8 @@ Shopware.Component.register('ltc-komfortkasse-payment-infos', {
             return [...postings].sort((a, b) => new Date(a.postingDate) - new Date(b.postingDate));
         },
 
-        // Fehlt in Feldern, die Komfortkasse vor der Einfuehrung geschrieben hat. Der Betrag ist dort positiv, in der Tabelle negativ.
+        // Fehlt in Feldern, die Komfortkasse vor der Einfuehrung geschrieben hat. Der Betrag ist dort positiv, in der Tabelle negativ. Ohne executionDate
+        // noch nicht ausgefuehrt; zaehlt trotzdem zur Summe, weil Komfortkasse den Betrag schon vom Bezahlten abzieht.
         refunds() {
             return this.infos && Array.isArray(this.infos.refunds) ? this.infos.refunds : [];
         },
@@ -59,16 +60,17 @@ Shopware.Component.register('ltc-komfortkasse-payment-infos', {
                 amount: p.amount,
                 currency: p.currency,
                 bankFees: p.bankFees,
-                refund: false,
+                type: 'rowPayment',
             }));
             const refunds = this.refunds.map((r) => ({
                 date: r.executionDate,
                 amount: -r.amount,
                 currency: r.currency,
                 bankFees: null,
-                refund: true,
+                type: r.executionDate ? 'rowRefund' : 'rowRefundPending',
             }));
-            return [...payments, ...refunds].sort((a, b) => new Date(a.date) - new Date(b.date));
+            // noch nicht ausgefuehrte zuletzt
+            return [...payments, ...refunds].sort((a, b) => (a.date ? new Date(a.date) : Infinity) - (b.date ? new Date(b.date) : Infinity) || 0);
         },
 
         hasBankFees() {
