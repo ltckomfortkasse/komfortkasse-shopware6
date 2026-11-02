@@ -24,3 +24,6 @@
 
 # 1.7.2
 - button 'Open in Komfortkasse': the link also contains the order id, so the right order opens if a merchant has the same order number in several shops
+
+# 1.7.3
+- Komfortkasse logo as icon in the buttons 'Open in Komfortkasse' and 'Create refund'

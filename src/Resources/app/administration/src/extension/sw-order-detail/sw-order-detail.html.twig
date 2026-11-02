@@ -6,6 +6,9 @@
     size="default"
     @click="onLtcKomfortkasseOpenOrder"
 >
+    <template #iconFront>
+        <ltc-komfortkasse-logo />
+    </template>
     {{ $tc('ltc-komfortkasse.order.button') }}
 </mt-button>
 <mt-button
@@ -16,6 +19,9 @@
     :disabled="ltcKomfortkasseRefundLoading"
     @click="onLtcKomfortkasseRefund"
 >
+    <template #iconFront>
+        <ltc-komfortkasse-logo />
+    </template>
     {{ $tc('ltc-komfortkasse.refund.button') }}
 </mt-button>
 {% parent %}
