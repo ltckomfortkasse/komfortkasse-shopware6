@@ -5,12 +5,13 @@
     :title="$t('ltc-komfortkasse.paymentInfos.title')"
 >
     <table
-        v-if="postings.length"
+        v-if="rows.length"
         class="ltc-komfortkasse-payment-infos__table"
     >
         <thead>
             <tr>
                 <th>{{ $t('ltc-komfortkasse.paymentInfos.postingDate') }}</th>
+                <th v-if="refunds.length">{{ $t('ltc-komfortkasse.paymentInfos.rowType') }}</th>
                 <th class="ltc-komfortkasse-payment-infos__number">{{ $t('ltc-komfortkasse.paymentInfos.postingAmount') }}</th>
                 <th
                     v-if="hasBankFees"
@@ -22,16 +23,17 @@
         </thead>
         <tbody>
             <tr
-                v-for="(posting, index) in postings"
+                v-for="(row, index) in rows"
                 :key="index"
             >
-                <td>{{ formatPostingDate(posting.postingDate) }}</td>
-                <td class="ltc-komfortkasse-payment-infos__number">{{ formatAmount(posting.amount, posting.currency) }}</td>
+                <td>{{ formatPostingDate(row.date) }}</td>
+                <td v-if="refunds.length">{{ $t(row.refund ? 'ltc-komfortkasse.paymentInfos.rowRefund' : 'ltc-komfortkasse.paymentInfos.rowPayment') }}</td>
+                <td class="ltc-komfortkasse-payment-infos__number">{{ formatAmount(row.amount, row.currency) }}</td>
                 <td
                     v-if="hasBankFees"
                     class="ltc-komfortkasse-payment-infos__number"
                 >
-                    {{ posting.bankFees ? formatAmount(posting.bankFees, posting.currency) : '-' }}
+                    {{ row.bankFees ? formatAmount(row.bankFees, row.currency) : '-' }}
                 </td>
             </tr>
         </tbody>
@@ -44,12 +46,12 @@
     </p>
 
     <dl
-        v-if="showPostingsSum || infos.amountMissing || infos.reminderFees"
+        v-if="showRowsSum || infos.amountMissing || infos.reminderFees"
         class="ltc-komfortkasse-payment-infos__summary"
     >
-        <template v-if="showPostingsSum">
+        <template v-if="showRowsSum">
             <dt>{{ $t('ltc-komfortkasse.paymentInfos.sum') }}</dt>
-            <dd>{{ formatAmount(postingsSum, postings[0].currency) }}</dd>
+            <dd>{{ formatAmount(rowsSum, rows[0].currency) }}</dd>
         </template>
         <template v-if="infos.amountMissing">
             <dt>{{ $t('ltc-komfortkasse.paymentInfos.amountMissing') }}</dt>

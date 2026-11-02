@@ -6,6 +6,9 @@
         "paymentInfos": {
             "title": "Payments in Komfortkasse",
             "postingDate": "Booking date",
+            "rowType": "Type",
+            "rowPayment": "Payment",
+            "rowRefund": "Refund",
             "postingAmount": "Amount",
             "bankFees": "Bank fees",
             "noPostings": "No payment assigned.",
@@ -13,7 +16,7 @@
             "amountMissing": "Still open",
             "reminderFees": "Reminder fees",
             "lastModified": "Last updated: {date}.",
-            "syncHint": "Checked daily, up to 30 days after the order date."
+            "syncHint": "Checked daily, up to 30 days after the order date, executed refunds also later."
         },
         "refund": {
             "button": "Create refund",
