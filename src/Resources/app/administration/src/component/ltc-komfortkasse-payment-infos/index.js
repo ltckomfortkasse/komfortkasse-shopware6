@@ -1,22 +1,32 @@
 import template from './ltc-komfortkasse-payment-infos.html.twig';
 import './ltc-komfortkasse-payment-infos.scss';
 
+const { Criteria } = Shopware.Data;
+
 const CUSTOM_FIELD = 'komfortkasse';
 // Das Buchungsdatum ist eine reine Tagesangabe (Mitternacht deutscher Zeit). In der Zeitzone des Benutzers stuende bei UTC der Vortag da.
 const POSTING_DATE_TIME_ZONE = 'Europe/Berlin';
+// so oft wird geprueft, ob das Komfortkasse-Fenster geschlossen wurde
+const REFUND_WINDOW_POLL_MS = 1000;
+// einmal nachladen nach dem Schliessen: Komfortkasse wartet beim Anlegen bis zu 8 s auf das Schreiben des Felds und schreibt danach im Hintergrund weiter
+const REFUND_FOLLOW_UP_MS = 10000;
 
 /**
  * Zahlungsdetails aus dem Zusatzfeld "komfortkasse" der Transaktion. Komfortkasse schreibt das Feld, die Karte zeigt es nur an und erscheint
  * nur, wenn es gefuellt ist. lastModified ist die letzte inhaltliche Aenderung, nicht die letzte Pruefung.
  *
+ * Die Karte zeigt den Stand der Live-Version: die Bestellung der Detailseite ist eine Arbeitsversion (Kopie beim Oeffnen) und kennt ein inzwischen
+ * geschriebenes Feld nicht. Gelesen wird beim Laden der Bestellung, wenn das Komfortkasse-Fenster geschlossen wird (und 10 s spaeter noch einmal)
+ * und wenn der Benutzer in diesen Tab zurueckkehrt.
+ *
  * Schaltflaeche "Rueckerstattung erfassen": oeffnet die Komfortkasse-Seite zur Bestellung in einem neuen Fenster. Sichtbar nur, wenn Komfortkasse
  * Rueckerstattungen fuer den Shop aktiviert hat und der Bestellung eine Zahlung zugeordnet ist, und nur fuer Benutzer mit dem Recht, Rueckerstattungen
- * anzulegen.
+ * anzulegen. Komfortkasse schreibt das Feld nach dem Anlegen in der Regel sofort.
  */
 Shopware.Component.register('ltc-komfortkasse-payment-infos', {
     template,
 
-    inject: ['ltcKomfortkasseRefundLinkService', 'acl'],
+    inject: ['ltcKomfortkasseRefundLinkService', 'acl', 'repositoryFactory'],
 
     mixins: [Shopware.Mixin.getByName('notification')],
 
@@ -32,15 +42,31 @@ Shopware.Component.register('ltc-komfortkasse-payment-infos', {
         return {
             refundAvailable: false,
             refundLoading: false,
+            // Transaktionen der Live-Version; null = noch nicht gelesen, dann die der Bestellung
+            reloadedTransactions: null,
+            // nur die Antwort der juengsten Abfrage zaehlt
+            reloadRequest: 0,
+            // das Fenster selbst steht nicht in data: Vue wuerde es reaktiv verpacken und dabei Eigenschaften lesen, die ein Fenster einer anderen
+            // Domain verweigert (SecurityError)
+            refundWindowOpen: false,
+            refundWindowTimer: null,
+            followUpTimer: null,
         };
     },
 
     computed: {
         infos() {
-            const transactions = this.order && this.order.transactions ? Array.from(this.order.transactions) : [];
+            const transactions = this.transactions;
             const withField = transactions.filter((t) => t.customFields && t.customFields[CUSTOM_FIELD]);
             const relevant = withField.find((t) => !t.stateMachineState || t.stateMachineState.technicalName !== 'cancelled') || withField[0];
             return relevant ? relevant.customFields[CUSTOM_FIELD] : null;
+        },
+
+        transactions() {
+            if (this.reloadedTransactions) {
+                return this.reloadedTransactions;
+            }
+            return this.order && this.order.transactions ? Array.from(this.order.transactions) : [];
         },
 
         postings() {
@@ -110,6 +136,28 @@ Shopware.Component.register('ltc-komfortkasse-payment-infos', {
                 this.checkRefund();
             },
         },
+
+        // Shopware ersetzt die Bestellung beim Laden, nach dem Speichern und beim Neuberechnen, oft wieder aus der alten Arbeitsversion: jedes Mal
+        // den Live-Stand lesen. Bei derselben Bestellung bleibt der bisherige Live-Stand stehen, bis die Antwort da ist.
+        order: {
+            immediate: true,
+            handler(newOrder, oldOrder) {
+                if (!newOrder || !oldOrder || newOrder.id !== oldOrder.id) {
+                    this.reloadedTransactions = null;
+                }
+                this.reloadInfos();
+            },
+        },
+    },
+
+    created() {
+        document.addEventListener('visibilitychange', this.onVisibilityChange);
+    },
+
+    beforeUnmount() {
+        document.removeEventListener('visibilitychange', this.onVisibilityChange);
+        this.stopWatchingRefundWindow();
+        this.clearFollowUp();
     },
 
     methods: {
@@ -139,6 +187,7 @@ Shopware.Component.register('ltc-komfortkasse-payment-infos', {
             this.ltcKomfortkasseRefundLinkService.createRefundLink(this.order.id).then((result) => {
                 if (result && result.url && target) {
                     target.location.href = result.url;
+                    this.watchRefundWindow(target);
                     return;
                 }
                 if (target) {
@@ -152,6 +201,65 @@ Shopware.Component.register('ltc-komfortkasse-payment-infos', {
                 this.createNotificationError({ message: this.$t('ltc-komfortkasse.refund.error') });
             }).finally(() => {
                 this.refundLoading = false;
+            });
+        },
+
+        // Die Komfortkasse-Seite kann diesen Tab nicht benachrichtigen (opener ist geloescht), "closed" laesst sich aber auch ueber Domains hinweg abfragen.
+        watchRefundWindow(target) {
+            this.stopWatchingRefundWindow();
+            this.clearFollowUp();
+            this.refundWindowOpen = true;
+            this.refundWindowTimer = window.setInterval(() => {
+                if (target.closed) {
+                    this.stopWatchingRefundWindow();
+                    this.reloadInfos();
+                    this.followUpTimer = window.setTimeout(() => {
+                        this.followUpTimer = null;
+                        this.reloadInfos();
+                    }, REFUND_FOLLOW_UP_MS);
+                }
+            }, REFUND_WINDOW_POLL_MS);
+        },
+
+        stopWatchingRefundWindow() {
+            if (this.refundWindowTimer) {
+                window.clearInterval(this.refundWindowTimer);
+            }
+            this.refundWindowTimer = null;
+            this.refundWindowOpen = false;
+        },
+
+        clearFollowUp() {
+            if (this.followUpTimer) {
+                window.clearTimeout(this.followUpTimer);
+            }
+            this.followUpTimer = null;
+        },
+
+        // Das Fenster ist meist ein Tab: wer nicht schliesst, sondern nur zurueckwechselt, bekommt den neuen Stand auch
+        onVisibilityChange() {
+            if (document.visibilityState === 'visible' && this.refundWindowOpen) {
+                this.reloadInfos();
+            }
+        },
+
+        // Transaktionen der Live-Version (Shopware.Context.api ohne Arbeitsversion). Die Bestellung selbst bleibt unberuehrt, ungespeicherte
+        // Aenderungen gehen nicht verloren.
+        reloadInfos() {
+            if (!this.order || !this.order.id) {
+                return;
+            }
+            const orderId = this.order.id;
+            const request = ++this.reloadRequest;
+            const criteria = new Criteria(1, 25);
+            criteria.addFilter(Criteria.equals('orderId', orderId));
+            criteria.addAssociation('stateMachineState');
+            this.repositoryFactory.create('order_transaction').search(criteria, Shopware.Context.api).then((result) => {
+                if (request === this.reloadRequest && this.order && this.order.id === orderId) {
+                    this.reloadedTransactions = Array.from(result);
+                }
+            }).catch(() => {
+                // Karte behaelt den bisherigen Stand
             });
         },
 

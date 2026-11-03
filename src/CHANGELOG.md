@@ -37,3 +37,6 @@
 
 # 1.7.6
 - card 'Payments in Komfortkasse': refunds not yet executed appear as rows without a date, marked as not yet executed, and count towards the total
+
+# 1.7.7
+- card 'Payments in Komfortkasse': shows the current data of the order, also while the order is being edited, and reloads it when the Komfortkasse window opened by 'Create refund' is closed or when the user returns to the administration tab (Komfortkasse writes a new refund immediately)
